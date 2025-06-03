@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+
+        <Version>0.0.1</Version>
+        <Authors>Tom - Robert Resing</Authors>
+        <ProductName>ResultType</ProductName>
+        <Company>TomRR</Company>
+        <Description>A short description of your library</Description>
+        <PackageId>TomRR.Nuget.ResultType</PackageId>
+        <PackageTags>ResultType, TomRR</PackageTags>
+    </PropertyGroup>
+
+</Project>
