@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <IsPackable>true</IsPackable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        
+        <RootNamespace>ResultType</RootNamespace>
+        <Version>0.0.1</Version>
+        <PackageReleaseNotes>
+            0.0.1 - First Testing Version
+
+            Introduced a "Rust-Like" Result-Type for C#/.NET projects.
+            The purpose of this type is to enable a more explicit and type-safe approach to error handling, which supports the creation of more reliable and readable code.
+        </PackageReleaseNotes>
+
+        <Authors>Tom-Robert Resing</Authors>
+        <ProductName>ResultType</ProductName>
+        <Company>TomRR</Company>
+        <Description>
+            Added a Rust-Like Result-Type for C#/.Net Projects
+        </Description>
+        <PackageId>TomRR.Core.ResultType</PackageId>
+        <PackageTags>ResultType, TomRR</PackageTags>
+
+        <Copyright>Copyright © $([System.DateTime]::Now.Year) Tom-Robert Resing</Copyright>
+
+        <RepositoryType>git</RepositoryType>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <PackageProjectUrl>https://github.com/TomRR/ResultType.Nuget</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/TomRR/ResultType.Nuget.git</RepositoryUrl>
+
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="$(MSBuildThisFileDirectory)..\README.md" Pack="true" PackagePath="" />
+        <None Include="$(MSBuildThisFileDirectory)..\LICENSE" Pack="true" PackagePath="" />
+    </ItemGroup>
+
+</Project>
