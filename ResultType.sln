@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultType.Core", "ResultType.Core\ResultType.Core.csproj", "{9F57B51F-B8E7-4079-BDA5-1E2771F30A8A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultType", "ResultType\ResultType.csproj", "{9F57B51F-B8E7-4079-BDA5-1E2771F30A8A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
