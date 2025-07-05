@@ -5,26 +5,38 @@
         <IsPackable>true</IsPackable>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <LangVersion>12</LangVersion>
         
         <RootNamespace>ResultType</RootNamespace>
-        <Version>0.0.1</Version>
+        <Version>0.0.2</Version>
         <PackageReleaseNotes>
-            0.0.1 - First Testing Version
+            0.0.2 - Architectural Refinements and API Enhancements
+            - Introduced a second specialized Result types: Result&lt;TValue, TError, TStatusOnly&gt; for success/failure/status-only scenarios.
+            - Added support for status-only results with constraint on IStatusOnlyResult.
+            - Added match methods for better pattern matching and error handling.
+            - Consolidated status-only types (`NoContent`, `Created`, etc.) into a dedicated location for better organization.
+            - General code cleanup and documentation improvements.
 
-            Introduced a "Rust-Like" Result-Type for C#/.NET projects.
-            The purpose of this type is to enable a more explicit and type-safe approach to error handling, which supports the creation of more reliable and readable code.
+            0.0.1 - Initial Testing Version: Rust-Like Result Type
+            - Introduced a robust and type-safe "Rust-Like" Result type for explicit error handling in C#/.NET projects.
+            - Result&lt;TValue, TError&gt;
+            - Supports result states: Success, Failure.
+            - Type safety and nullability analysis with comprehensive `MemberNotNullWhen` attributes.
+            - Internal state management with private constructors, encouraging controlled instantiation.
+            - Designed to promote more reliable and readable code by avoiding exceptions for control flow.
+            - Supports implicit conversions for easy result creation.
         </PackageReleaseNotes>
 
         <Authors>Tom-Robert Resing</Authors>
         <ProductName>ResultType</ProductName>
         <Company>TomRR</Company>
         <Description>
-            Added a Rust-Like Result-Type for C#/.Net Projects
+            A lightweight, robust, and type-safe "Rust-Like" Result type for C#/.NET projects, promoting explicit error handling and reliable code. Designed to elegantly manage operation outcomes without relying on exceptions for control flow.
         </Description>
         <PackageId>TomRR.Core.ResultType</PackageId>
-        <PackageTags>ResultType, TomRR</PackageTags>
+        <PackageTags>ResultType;ErrorHandling;Functional;Result;FunctionalProgramming;CSharp;DotNet</PackageTags>
 
-        <Copyright>Copyright © $([System.DateTime]::Now.Year) Tom-Robert Resing</Copyright>
+        <Copyright>Copyright © 2024-$([System.DateTime]::Now.Year) Tom-Robert Resing</Copyright>
 
         <RepositoryType>git</RepositoryType>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -33,6 +45,7 @@
 
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
     <ItemGroup>
         <None Include="$(MSBuildThisFileDirectory)..\README.md" Pack="true" PackagePath="" />
