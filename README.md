@@ -1,8 +1,22 @@
-# Nuget: ResultType 
+# 📦 ResultType
 
-## 🚀 Usage
+A lightweight, expressive, and extensible result abstraction for .NET — with support for structured results, errors, and unit-only responses (like `NoContent`, `Accepted`, etc).
 
-### Basic Example
+---
+
+## ✨ Features
+
+- ✅ Simple `Result<TSuccess, TError>` model
+- ✅ Optional support for `StatusOnly` results
+- ✅ Clean pattern matching with `.Match(...)`
+- ✅ ASP.NET Core integration via `ToActionResult()`
+- ✅ Easily extensible with your own unit result types
+
+---
+
+## 🚀 Basic Usage
+
+### `Result<TSuccess, TError>`
 
 ```csharp
 Result<int, string> Divide(int a, int b)
@@ -21,8 +35,9 @@ var message = result.Match(
 );
 ```
 
-With StatusOnly
+### Result<TSuccess, TError, TStatusOnly>
 
+Supports status-only outcomes like NoCoÍntent, Accepted, etc.
 ```csharp
 Result<string, string, NoContent> TryFindItem(bool found)
 {
@@ -31,13 +46,16 @@ Result<string, string, NoContent> TryFindItem(bool found)
 
     return Result.NoContent;
 }
+
+var response = TryFindItem(false).Match(
+    success => $"Found: {success}",
+    error => $"Error: {error}",
+    status => "No item found."
+);
 ```
+## 🌐 ASP.NET Core Integration
 
----
-
-## ✅ 4. **ASP.NET Core Integration: `ToIActionResult()`**
-
-You can add this in an extensions file (`ResultExtensions.cs`) to bridge with MVC:
+Add this extension to convert Result into IActionResult:
 
 ```csharp
 using Microsoft.AspNetCore.Mvc;
@@ -46,7 +64,8 @@ namespace ResultType.Extensions;
 
 public static class ResultExtensions
 {
-    public static IActionResult ToActionResult<TValue, TError>(this Result<TValue, TError> result)
+    public static IActionResult ToActionResult<TValue, TError>(
+        this Result<TValue, TError> result)
     {
         return result.Match<IActionResult>(
             value => new OkObjectResult(value),
@@ -72,16 +91,56 @@ public static class ResultExtensions
 }
 ```
 
+## ✅ Controller Example
 
-## Add Your Own Unit Result
+```csharp
+[HttpGet]
+public IActionResult GetData() =>
+    TryFindItem(true).ToActionResult();
+```
 
+## 🧩 Custom Unit (StatusOnly) Results
+
+Define your own unit-only result:
+```
+[StructLayout(LayoutKind.Sequential, Size = 1)]
+public readonly struct MyOwnResult : IStatusOnlyResult;
+```
+
+Expose it via the factory:
 ```csharp
 public static partial class Result
 {
     public static MyOwnResult MyOwnResult => new MyOwnResult();
 }
 ```
-```csharp
-[StructLayout(LayoutKind.Sequential, Size = 1)]
-public readonly struct MyOwnResult : IStatusOnlyResult;
+
+Use just like built-in NoContent, Created, etc.  
+
+## 🧰 Built-in Unit Result Types
+| Result Type   | Description                            | HTTP Status |
+| ------------- | -------------------------------------- | ----------- |
+| `NoContent`   | Operation successful, no content       | 204         |
+| `Accepted`    | Request accepted for async processing  | 202         |
+| `Created`     | New resource created                   | 201         |
+| `Success`     | Generic success                        | 200         |
+| `Deleted`     | Resource successfully deleted (custom) | Custom      |
+| `Updated`     | Resource successfully updated (custom) | Custom      |
+| `NotModified` | Resource not modified                  | 304         |
+
+All are defined as *zero-alloc* `readonly struct`.
+
+## 📦 Installation
+
+Install via NuGet:
 ```
+dotnet add package ResultType
+```
+Or via your .csproj:
+```
+<PackageReference Include="ResultType" Version="0.0.2" />
+```
+
+## 📄 License
+
+Licensed under the Apache License 2.0.
