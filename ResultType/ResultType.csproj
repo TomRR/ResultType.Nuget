@@ -8,16 +8,24 @@
         <LangVersion>12</LangVersion>
         
         <RootNamespace>ResultType</RootNamespace>
-        <Version>0.0.2</Version>
+        <AssemblyName>ResultType</AssemblyName>
+
+        <Version>0.0.4</Version>    
         <PackageReleaseNotes>
-            0.0.2 - Architectural Refinements and API Enhancements
+            0.0.4
+            - Updated Readme file - added section for implicit and explicit conversions
+            
+            0.0.3 
+             - Added AssemblyName to the .csproj
+            
+            0.0.2: Architectural Refinements and API Enhancements
             - Introduced a second specialized Result types: Result&lt;TValue, TError, TStatusOnly&gt; for success/failure/status-only scenarios.
             - Added support for status-only results with constraint on IStatusOnlyResult.
             - Added match methods for better pattern matching and error handling.
             - Consolidated status-only types (`NoContent`, `Created`, etc.) into a dedicated location for better organization.
             - General code cleanup and documentation improvements.
 
-            0.0.1 - Initial Testing Version: Rust-Like Result Type
+            0.0.1: Initial Testing Version: Rust-Like Result Type
             - Introduced a robust and type-safe "Rust-Like" Result type for explicit error handling in C#/.NET projects.
             - Result&lt;TValue, TError&gt;
             - Supports result states: Success, Failure.

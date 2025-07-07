@@ -35,6 +35,8 @@ var message = result.Match(
 );
 ```
 
+Your Result types support clean and expressive ways to return values from functions — using either implicit conversion or explicit factory methods.
+
 ### Result<TSuccess, TError, TStatusOnly>
 
 Supports status-only outcomes like NoCoÍntent, Accepted, etc.
@@ -53,6 +55,63 @@ var response = TryFindItem(false).Match(
     status => "No item found."
 );
 ```
+
+## ➕ Implicit & Explicit Conversions
+
+You can return results using implicit conversions for clean and expressive code:
+| Input Type    | Result Type                                 |
+| ------------- | ------------------------------------------- |
+| `TValue`      | `Result<TValue, TError>` or with StatusOnly |
+| `TError`      | `Result<TValue, TError>` or with StatusOnly |
+| `TStatusOnly` | `Result<TValue, TError, TStatusOnly>`       |
+
+### ✅ Implicit Example
+```csharp
+Result<int, string> Divide(int a, int b)
+{
+    if (b == 0)
+        return "Invalid"; // implicitly creates an error
+
+    return a / b; // implicitly creates a success
+}
+```
+
+```csharp
+Result<string, string, NoContent> TryGet(bool exists)
+{
+    if (!exists)
+        return Result.NoContent;
+
+    return "value";
+}
+
+```
+
+### 📎 Explicit Example
+
+Prefer explicit factory methods if clarity is desired:
+```csharp
+Result<int, Error, NoContent> Compute()
+{
+    if (ShouldSkip())
+        return Result<int, Error, NoContent>.Status(Result.NoContent);
+
+    if (HasFailed())
+        return Result<int, Error, NoContent>.Failed(Error.Failure("Failure occurred"));
+
+    return Result<int, Error, NoContent>.Success(42);
+}
+
+```
+
+Available factory methods:
+
+    Result<TValue, TError, TStatusOnly>.Success(value)
+
+    Result<TValue, TError, TStatusOnly>.Failed(error)
+
+    Result<TValue, TError, TStatusOnly>.Status(statusOnly)
+
 ## 🌐 ASP.NET Core Integration
 
 Add this extension to convert Result into IActionResult:
@@ -138,7 +197,7 @@ dotnet add package ResultType
 ```
 Or via your .csproj:
 ```
-<PackageReference Include="ResultType" Version="0.0.2" />
+<PackageReference Include="ResultType" Version="0.0.4" />
 ```
 
 ## 📄 License
