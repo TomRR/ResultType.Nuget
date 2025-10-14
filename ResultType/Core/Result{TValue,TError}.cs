@@ -72,6 +72,8 @@ public sealed partial record Result<TValue, TError>
     /// Indicates whether a non-null success value is available.
     /// </summary>
     [Pure]
+    [MemberNotNullWhen(true, nameof(Value))]
+    [MemberNotNullWhen(false, nameof(Error))]
     public bool HasValue => IsSuccessful && Value is not null;
 
     /// <summary>
@@ -86,6 +88,8 @@ public sealed partial record Result<TValue, TError>
     /// Indicates whether a non-null error is available.
     /// </summary>
     [Pure]
+    [MemberNotNullWhen(false, nameof(Value))]
+    [MemberNotNullWhen(true, nameof(Error))]
     public bool HasError => HasFailed && Error is not null;
     
 

@@ -102,6 +102,9 @@ public sealed partial record Result<TValue, TError, TStatusOnly> where TStatusOn
     /// Indicates whether a non-null success value is available.
     /// </summary>
     [Pure]
+    [MemberNotNullWhen(true, nameof(Value))]
+    [MemberNotNullWhen(false, nameof(Error))]
+    [MemberNotNullWhen(false, nameof(StatusOnly))]
     public bool HasValue => IsSuccessful && Value is not null;
 
     /// <summary>
@@ -117,6 +120,9 @@ public sealed partial record Result<TValue, TError, TStatusOnly> where TStatusOn
     /// Indicates whether a non-null error is available.
     /// </summary>
     [Pure]
+    [MemberNotNullWhen(false, nameof(Value))]
+    [MemberNotNullWhen(true, nameof(Error))]
+    [MemberNotNullWhen(false, nameof(StatusOnly))]
     public bool HasError => HasFailed && Error is not null;
 
     /// <summary>
@@ -127,6 +133,15 @@ public sealed partial record Result<TValue, TError, TStatusOnly> where TStatusOn
     [MemberNotNullWhen(false, nameof(Error))]
     [MemberNotNullWhen(true, nameof(StatusOnly))]
     public bool IsStatusOnly => _state == ResultState.StatusOnly;
+    
+    /// <summary>
+    /// Indicates whether a non-null status-only is available.
+    /// </summary>
+    [Pure]
+    [MemberNotNullWhen(false, nameof(Value))]
+    [MemberNotNullWhen(false, nameof(Error))]
+    [MemberNotNullWhen(true, nameof(StatusOnly))]
+    public bool HasStatusOnly => _state == ResultState.StatusOnly;
 
     /// <summary>
     /// Pattern matches on all possible result cases: success, failure, or status-only.

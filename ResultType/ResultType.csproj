@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
         <IsPackable>true</IsPackable>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
@@ -10,8 +10,13 @@
         <RootNamespace>ResultType</RootNamespace>
         <AssemblyName>ResultType</AssemblyName>
 
-        <Version>0.0.4</Version>    
+        <Version>0.0.5</Version>    
         <PackageReleaseNotes>
+            0.0.5
+            - Added `MemberNotNullWhen` attributes to `HasValue` and `HasError` (improve compiler flow analysis).
+            - Introduced the new `HasStatusOnly` property to explicitly indicate when a result represents a status-only state.
+            - Added .Net 8 support
+            
             0.0.4
             - Updated Readme file - added section for implicit and explicit conversions
             
