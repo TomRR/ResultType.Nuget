@@ -1,4 +1,4 @@
-namespace ResultType.UnitTypes;
+namespace ResultType;
 
 /// <summary>
 /// Provides factory accessors for common unit-style result types such as <see cref="NoContent" />, <see cref="Accepted" />, etc.
@@ -6,6 +6,18 @@ namespace ResultType.UnitTypes;
 /// </summary>
 public static partial class Result
 {
+    /// <summary>
+    /// Creates a success result with a value of type <typeparamref name="TValue"/>.
+    /// </summary>
+    [Pure]
+    public static Success<TValue> SuccessOf<TValue>(TValue value) => Success<TValue>.Of(value);
+    
+    /// <summary>
+    /// Creates a error result with a value of type <typeparamref name="TValue"/>.
+    /// </summary>
+    [Pure]
+    public static Error<TValue> ErrorOf<TValue>(TValue value) => Error<TValue>.Of(value);
+    
     /// <summary>
     /// Represents a result where no content is returned (e.g., HTTP 204 No Content).
     /// </summary>
@@ -40,4 +52,24 @@ public static partial class Result
     /// Indicates that a resource was successfully updated (custom semantic).
     /// </summary>
     public static Updated Updated => new();
+    
+    /// <summary>
+    /// Indicates that a process was successfully skipped (custom semantic).
+    /// </summary>
+    public static Skipped Skipped => new();
+    
+    /// <summary>
+    /// Indicates that a process  cancelled (custom semantic).
+    /// </summary>
+    public static Timeout Timeout => new();
+    
+    /// <summary>
+    /// Indicates that a process was cancelled (custom semantic).
+    /// </summary>
+    public static Cancelled Cancelled => new();
+    
+    /// <summary>
+    /// Indicates that a process is retried (custom semantic).
+    /// </summary>
+    public static Retried Retried => new();
 }

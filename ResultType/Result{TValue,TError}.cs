@@ -1,4 +1,4 @@
-namespace ResultType.Core;
+namespace ResultType;
 
 /// <summary>
 /// Represents the result of an operation that can either succeed with a value of type <typeparamref name="TValue"/>
@@ -6,7 +6,7 @@ namespace ResultType.Core;
 /// </summary>
 /// <typeparam name="TValue">The type of the value produced on success.</typeparam>
 /// <typeparam name="TError">The type of the error returned on failure.</typeparam>
-public sealed partial record Result<TValue, TError>
+public sealed partial record Result<TValue, TError> where TError : IErrorResult
 {
     private readonly ResultState _state;
 

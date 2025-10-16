@@ -1,4 +1,4 @@
-namespace ResultType.Core;
+namespace ResultType;
 
 /// <summary>
 /// Defines the types of errors that can be represented by an <see cref="Error" />.

@@ -1,50 +1,89 @@
 namespace ResultType.UnitTypes;
 
 /// <summary>
-/// Represents a status-only result indicating that no content is returned (HTTP 204).
+/// Represents a status-only result indicating that no content is returned.
+/// Commonly corresponds to HTTP 204 (No Content).
 /// </summary>
 [StructLayout(LayoutKind.Sequential, Size = 1)]
 [DebuggerDisplay("NoContent")]
 public readonly struct NoContent : IStatusOnlyResult;
 
 /// <summary>
-/// Represents a status-only result indicating the resource has not been modified (HTTP 304).
+/// Represents a status-only result indicating that the requested resource has not been modified since the last retrieval.
+/// Commonly corresponds to HTTP 304 (Not Modified).
 /// </summary>
 [StructLayout(LayoutKind.Sequential, Size = 1)]
 [DebuggerDisplay("NotModified")]
 public readonly struct NotModified : IStatusOnlyResult;
 
 /// <summary>
-/// Represents a status-only result indicating a generic success (HTTP 200 OK).
+/// Represents a status-only result indicating a generic successful operation.
+/// Commonly corresponds to HTTP 200 (OK).
 /// </summary>
 [StructLayout(LayoutKind.Sequential, Size = 1)]
 [DebuggerDisplay("Success")]
-public readonly struct Success;
+public readonly struct Success : IStatusOnlyResult;
 
 /// <summary>
-/// Represents a status-only result indicating that a new resource was created (HTTP 201).
+/// Represents a status-only result indicating that a new resource was successfully created.
+/// Commonly corresponds to HTTP 201 (Created).
 /// </summary>
 [StructLayout(LayoutKind.Sequential, Size = 1)]
 [DebuggerDisplay("Created")]
-public readonly struct Created;
+public readonly struct Created : IStatusOnlyResult;
 
 /// <summary>
-/// Represents a status-only result indicating that a request was accepted for asynchronous processing (HTTP 202).
+/// Represents a status-only result indicating that a request has been accepted for asynchronous processing.
+/// Commonly corresponds to HTTP 202 (Accepted).
 /// </summary>
 [StructLayout(LayoutKind.Sequential, Size = 1)]
 [DebuggerDisplay("Accepted")]
-public readonly struct Accepted;
+public readonly struct Accepted : IStatusOnlyResult;
 
 /// <summary>
-/// Represents a status-only result indicating that a resource was successfully deleted (custom status).
+/// Represents a status-only result indicating that a resource was successfully deleted.
+/// This is a custom status that can be used to signal successful deletion operations.
 /// </summary>
 [StructLayout(LayoutKind.Sequential, Size = 1)]
 [DebuggerDisplay("Deleted")]
-public readonly struct Deleted;
+public readonly struct Deleted : IStatusOnlyResult;
 
 /// <summary>
-/// Represents a status-only result indicating that a resource was successfully updated (custom status).
+/// Represents a status-only result indicating that a resource was successfully updated.
+/// This is a custom status useful for signaling successful update operations.
 /// </summary>
 [StructLayout(LayoutKind.Sequential, Size = 1)]
 [DebuggerDisplay("Updated")]
-public readonly struct Updated;
+public readonly struct Updated : IStatusOnlyResult;
+
+/// <summary>
+/// Represents a status-only result indicating that a process or operation was intentionally skipped.
+/// This is a custom status that can be used to denote bypassed or deferred work.
+/// </summary>
+[StructLayout(LayoutKind.Sequential, Size = 1)]
+[DebuggerDisplay("Skipped")]
+public readonly struct Skipped : IStatusOnlyResult;
+
+/// <summary>
+/// Represents a status-only result indicating that an operation did not complete due to a timeout.
+/// This is a custom status that can be used for time-sensitive operations or workflows.
+/// </summary>
+[StructLayout(LayoutKind.Sequential, Size = 1)]
+[DebuggerDisplay("Timeout")]
+public readonly struct Timeout : IStatusOnlyResult;
+
+/// <summary>
+/// Represents a status-only result indicating that an operation was cancelled before completion.
+/// This is a custom status that can be used for cooperative cancellation scenarios.
+/// </summary>
+[StructLayout(LayoutKind.Sequential, Size = 1)]
+[DebuggerDisplay("Cancelled")]
+public readonly struct Cancelled : IStatusOnlyResult;
+
+/// <summary>
+/// Represents a status-only result indicating that an operation was retried after a previous attempt.
+/// This is a custom status that can be used to signal repeated execution or recovery attempts.
+/// </summary>
+[StructLayout(LayoutKind.Sequential, Size = 1)]
+[DebuggerDisplay("Retried")]
+public readonly struct Retried : IStatusOnlyResult;

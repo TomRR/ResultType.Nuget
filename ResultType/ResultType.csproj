@@ -10,8 +10,17 @@
         <RootNamespace>ResultType</RootNamespace>
         <AssemblyName>ResultType</AssemblyName>
 
-        <Version>0.0.5</Version>    
+        <Version>0.0.6</Version>    
         <PackageReleaseNotes>
+            0.0.6
+            - Added Success&lt;TValue&gt; and Error&lt;TValue&gt;
+            - Added new Unit-Types:
+                - Skipped 
+                - Timeout 
+                - Cancelled
+                - Retried
+            - Added Result Factory Methods for new Types including SuccessOf() and ErrorOf()
+  
             0.0.5
             - Added `MemberNotNullWhen` attributes to `HasValue` and `HasError` (improve compiler flow analysis).
             - Introduced the new `HasStatusOnly` property to explicitly indicate when a result represents a status-only state.

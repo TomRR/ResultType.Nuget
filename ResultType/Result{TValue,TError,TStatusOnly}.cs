@@ -1,4 +1,4 @@
-namespace ResultType.Core;
+namespace ResultType;
 
 /// <summary>
 /// Represents the result of an operation that may yield a value on success, an error on failure,
@@ -7,7 +7,9 @@ namespace ResultType.Core;
 /// <typeparam name="TValue">The type of the value on success.</typeparam>
 /// <typeparam name="TError">The type of the error on failure.</typeparam>
 /// <typeparam name="TStatusOnly">The type representing a status-only result. Must implement <see cref="IStatusOnlyResult"/>.</typeparam>
-public sealed partial record Result<TValue, TError, TStatusOnly> where TStatusOnly : IStatusOnlyResult
+public sealed partial record Result<TValue, TError, TStatusOnly> 
+    where TError : IErrorResult
+    where TStatusOnly : IStatusOnlyResult
 {
     /// <summary>
     /// The value when the result is a success.
@@ -132,7 +134,7 @@ public sealed partial record Result<TValue, TError, TStatusOnly> where TStatusOn
     [MemberNotNullWhen(false, nameof(Value))]
     [MemberNotNullWhen(false, nameof(Error))]
     [MemberNotNullWhen(true, nameof(StatusOnly))]
-    public bool IsStatusOnly => _state == ResultState.StatusOnly;
+    public bool IsStatusOnly => _state is ResultState.StatusOnly;
     
     /// <summary>
     /// Indicates whether a non-null status-only is available.
@@ -141,7 +143,7 @@ public sealed partial record Result<TValue, TError, TStatusOnly> where TStatusOn
     [MemberNotNullWhen(false, nameof(Value))]
     [MemberNotNullWhen(false, nameof(Error))]
     [MemberNotNullWhen(true, nameof(StatusOnly))]
-    public bool HasStatusOnly => _state == ResultState.StatusOnly;
+    public bool HasStatusOnly => IsStatusOnly && StatusOnly is not null;
 
     /// <summary>
     /// Pattern matches on all possible result cases: success, failure, or status-only.

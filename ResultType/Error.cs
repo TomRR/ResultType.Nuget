@@ -1,10 +1,10 @@
-namespace ResultType.Core;
+namespace ResultType;
 
 /// <summary>
 /// Represents a structured error with description and classification.
 /// </summary>
 [DebuggerDisplay("Error: {ErrorType} - {Description}")]
-public readonly partial struct Error
+public readonly partial struct Error  : IErrorResult
 {
   /// <summary>
   /// A human-readable description of the error.

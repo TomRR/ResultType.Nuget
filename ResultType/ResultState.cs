@@ -1,4 +1,4 @@
-namespace ResultType.Core;
+namespace ResultType;
 
 /// <summary>
 /// Represents the state of a result object.
