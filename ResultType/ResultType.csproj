@@ -12,41 +12,7 @@
 
         <Version>0.0.6</Version>    
         <PackageReleaseNotes>
-            0.0.6
-            - Added Success&lt;TValue&gt; and Error&lt;TValue&gt;
-            - Added new Unit-Types:
-                - Skipped 
-                - Timeout 
-                - Cancelled
-                - Retried
-            - Added Result Factory Methods for new Types including SuccessOf() and ErrorOf()
-  
-            0.0.5
-            - Added `MemberNotNullWhen` attributes to `HasValue` and `HasError` (improve compiler flow analysis).
-            - Introduced the new `HasStatusOnly` property to explicitly indicate when a result represents a status-only state.
-            - Added .Net 8 support
-            
-            0.0.4
-            - Updated Readme file - added section for implicit and explicit conversions
-            
-            0.0.3 
-             - Added AssemblyName to the .csproj
-            
-            0.0.2: Architectural Refinements and API Enhancements
-            - Introduced a second specialized Result types: Result&lt;TValue, TError, TStatusOnly&gt; for success/failure/status-only scenarios.
-            - Added support for status-only results with constraint on IStatusOnlyResult.
-            - Added match methods for better pattern matching and error handling.
-            - Consolidated status-only types (`NoContent`, `Created`, etc.) into a dedicated location for better organization.
-            - General code cleanup and documentation improvements.
-
-            0.0.1: Initial Testing Version: Rust-Like Result Type
-            - Introduced a robust and type-safe "Rust-Like" Result type for explicit error handling in C#/.NET projects.
-            - Result&lt;TValue, TError&gt;
-            - Supports result states: Success, Failure.
-            - Type safety and nullability analysis with comprehensive `MemberNotNullWhen` attributes.
-            - Internal state management with private constructors, encouraging controlled instantiation.
-            - Designed to promote more reliable and readable code by avoiding exceptions for control flow.
-            - Supports implicit conversions for easy result creation.
+            See release notes at https://github.com/TomRR/ResultType.Nuget?tab=readme-ov-file#-release-notes--changelog
         </PackageReleaseNotes>
 
         <Authors>Tom-Robert Resing</Authors>

@@ -5,7 +5,7 @@ namespace ResultType.UnitTypes;
 /// Commonly corresponds to HTTP 204 (No Content).
 /// </summary>
 [StructLayout(LayoutKind.Sequential, Size = 1)]
-[DebuggerDisplay("NoContent")]
+[DebuggerDisplay(nameof(NoContent))]
 public readonly struct NoContent : IStatusOnlyResult;
 
 /// <summary>
@@ -13,7 +13,7 @@ public readonly struct NoContent : IStatusOnlyResult;
 /// Commonly corresponds to HTTP 304 (Not Modified).
 /// </summary>
 [StructLayout(LayoutKind.Sequential, Size = 1)]
-[DebuggerDisplay("NotModified")]
+[DebuggerDisplay(nameof(NotModified))]
 public readonly struct NotModified : IStatusOnlyResult;
 
 /// <summary>
@@ -21,7 +21,7 @@ public readonly struct NotModified : IStatusOnlyResult;
 /// Commonly corresponds to HTTP 200 (OK).
 /// </summary>
 [StructLayout(LayoutKind.Sequential, Size = 1)]
-[DebuggerDisplay("Success")]
+[DebuggerDisplay(nameof(Success))]
 public readonly struct Success : IStatusOnlyResult;
 
 /// <summary>
@@ -29,7 +29,7 @@ public readonly struct Success : IStatusOnlyResult;
 /// Commonly corresponds to HTTP 201 (Created).
 /// </summary>
 [StructLayout(LayoutKind.Sequential, Size = 1)]
-[DebuggerDisplay("Created")]
+[DebuggerDisplay(nameof(Created))]
 public readonly struct Created : IStatusOnlyResult;
 
 /// <summary>
@@ -37,7 +37,7 @@ public readonly struct Created : IStatusOnlyResult;
 /// Commonly corresponds to HTTP 202 (Accepted).
 /// </summary>
 [StructLayout(LayoutKind.Sequential, Size = 1)]
-[DebuggerDisplay("Accepted")]
+[DebuggerDisplay(nameof(Accepted))]
 public readonly struct Accepted : IStatusOnlyResult;
 
 /// <summary>
@@ -45,7 +45,7 @@ public readonly struct Accepted : IStatusOnlyResult;
 /// This is a custom status that can be used to signal successful deletion operations.
 /// </summary>
 [StructLayout(LayoutKind.Sequential, Size = 1)]
-[DebuggerDisplay("Deleted")]
+[DebuggerDisplay(nameof(Deleted))]
 public readonly struct Deleted : IStatusOnlyResult;
 
 /// <summary>
@@ -53,7 +53,7 @@ public readonly struct Deleted : IStatusOnlyResult;
 /// This is a custom status useful for signaling successful update operations.
 /// </summary>
 [StructLayout(LayoutKind.Sequential, Size = 1)]
-[DebuggerDisplay("Updated")]
+[DebuggerDisplay(nameof(Updated))]
 public readonly struct Updated : IStatusOnlyResult;
 
 /// <summary>
@@ -61,7 +61,7 @@ public readonly struct Updated : IStatusOnlyResult;
 /// This is a custom status that can be used to denote bypassed or deferred work.
 /// </summary>
 [StructLayout(LayoutKind.Sequential, Size = 1)]
-[DebuggerDisplay("Skipped")]
+[DebuggerDisplay(nameof(Skipped))]
 public readonly struct Skipped : IStatusOnlyResult;
 
 /// <summary>
@@ -69,7 +69,7 @@ public readonly struct Skipped : IStatusOnlyResult;
 /// This is a custom status that can be used for time-sensitive operations or workflows.
 /// </summary>
 [StructLayout(LayoutKind.Sequential, Size = 1)]
-[DebuggerDisplay("Timeout")]
+[DebuggerDisplay(nameof(Timeout))]
 public readonly struct Timeout : IStatusOnlyResult;
 
 /// <summary>
@@ -77,7 +77,7 @@ public readonly struct Timeout : IStatusOnlyResult;
 /// This is a custom status that can be used for cooperative cancellation scenarios.
 /// </summary>
 [StructLayout(LayoutKind.Sequential, Size = 1)]
-[DebuggerDisplay("Cancelled")]
+[DebuggerDisplay(nameof(Cancelled))]
 public readonly struct Cancelled : IStatusOnlyResult;
 
 /// <summary>
@@ -85,5 +85,21 @@ public readonly struct Cancelled : IStatusOnlyResult;
 /// This is a custom status that can be used to signal repeated execution or recovery attempts.
 /// </summary>
 [StructLayout(LayoutKind.Sequential, Size = 1)]
-[DebuggerDisplay("Retried")]
+[DebuggerDisplay(nameof(Retried))]
 public readonly struct Retried : IStatusOnlyResult;
+
+/// <summary>
+/// Represents a neutral result indicating that an operation produced no meaningful outcome.
+/// Often used as a functional placeholder for "no result" scenarios.
+/// </summary>
+[StructLayout(LayoutKind.Sequential, Size = 1)]
+[DebuggerDisplay(nameof(None))]
+public readonly struct None : IStatusOnlyResult;
+
+/// <summary>
+/// Represents an empty result indicating a successful operation with no associated data.
+/// Functionally similar to <see cref="NoContent"/>, but more general-purpose.
+/// </summary>
+[StructLayout(LayoutKind.Sequential, Size = 1)]
+[DebuggerDisplay(nameof(Empty))]
+public readonly struct Empty : IStatusOnlyResult;
