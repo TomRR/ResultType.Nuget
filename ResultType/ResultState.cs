@@ -1,4 +1,4 @@
-namespace ResultType;
+namespace TomRR.ResultType;
 
 /// <summary>
 /// Represents the state of a result object.

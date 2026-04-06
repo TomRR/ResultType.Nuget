@@ -1,150 +1,202 @@
-# 📦 ResultType
+# ResultType
 
----
-A lightweight, expressive, and extensible result abstraction for .NET — with support for structured results, errors, generic success/error, and unit-only responses (like `NoContent`, `Accepted`, `None`, `Empty`, etc).
+A lightweight, expressive, and extensible Result abstraction for .NET.
 
----
-## 📑 Table of Contents
-- [✨ Features](#-features)
-- [🚀 Basic Usage](#-basic-usage)
-    - [Result\<TSuccess, TError\>](#resulttsuccess-terror)
-    - [Result\<TSuccess, TError, TStatusOnly\>](#resulttsuccess-terror-tstatusonly)
-- [➕ Implicit & Explicit Conversions](#-implicit--explicit-conversions)
-    - [✅ Implicit Example](#-implicit-example)
-    - [📎 Explicit Example](#-explicit-example)
-- [🧱 Generic Success and Error Results](#-generic-success-and-error-results)
-- [🧩 Custom Unit (StatusOnly) Results](#-custom-unit-statusonly-results)
-- [🧰 Built-in Unit Result Types](#-built-in-unit-result-types)
-- [🌐 ASP.NET Core Integration](#-aspnet-core-integration)
-- [✅ Controller Example](#-controller-example)
-- [📦 Installation](#-installation)
-- [📄 License](#-license)
-- [📝 Release Notes / Changelog](#-release-notes--changelog)
----
+`ResultType` provides Rust-like result handling for C# with explicit success/failure/status-only flows, so you can model operation outcomes without using exceptions for control flow.
 
-## ✨ Features
+## Quick Links
 
-- ✅ Simple `Result<TSuccess, TError>` model
-- ✅ Optional support for `StatusOnly` results
-- ✅ Generic `Success<TValue>` and `Error<TValue>` for carrying payloads
-- ✅ Unit-style results: `NoContent`, `Accepted`, `Created`, `Skipped`, `Timeout`, `Cancelled`, `Retried`, `None`, `Empty`
-- ✅ Clean pattern matching with `.Match(...)`
-- ✅ ASP.NET Core integration via `ToActionResult()`
-- ✅ Easily extensible with custom unit result types
+- Sample verification guide: `ResultType.Sample/README.md`
+- Run the sample: `dotnet run --project ResultType.Sample/ResultType.Sample.csproj -c Release`
 
----
+## Table of Contents
 
-## 🚀 Basic Usage
+- [Features](#features)
+- [Installation](#installation)
+- [Basic Usage](#basic-usage)
+  - [Result<TValue, TError>](#resulttvalue-terror)
+  - [Result<TError>](#resultterror)
+  - [Result<TValue, TError, TStatusOnly>](#resulttvalue-terror-tstatusonly)
+- [Implicit and Explicit Creation](#implicit-and-explicit-creation)
+- [Functional Composition](#functional-composition)
+- [Generic Success and Error Wrappers](#generic-success-and-error-wrappers)
+- [Naming and Type Clarification](#naming-and-type-clarification)
+- [Built-in Status-Only Types](#built-in-status-only-types)
+- [Custom Status-Only Type](#custom-status-only-type)
+- [ASP.NET Core Integration Example](#aspnet-core-integration-example)
+- [ResultType.Sample](#resulttypesample)
+- [License](#license)
+- [Changelog](#changelog)
 
-### `Result<TSuccess, TError>`
+## Features
+
+- `Result<TValue, TError>` for success/failure outcomes
+- `Result<TError>` for success/failure outcomes without a success payload
+- `Result<TValue, TError, TStatusOnly>` for success/failure/status-only outcomes
+- Implicit conversion from value/error/status-only markers
+- Explicit factories for clarity: `Ok`, `Fail`, `Success`, `Failed`, `Status`
+- Functional composition helpers: `Match`, `Map`, `Bind`, `MapError`
+- Built-in status-only structs like `NoContent`, `Accepted`, `NotModified`, etc.
+- Generic wrappers: `Success<TValue>`, `Error<TValue>`, `Result.SuccessOf(...)`, `Result.ErrorOf(...)`
+- Easy to extend with your own `IStatusOnlyResult` structs
+
+## Installation
+
+```bash
+dotnet add package TomRR.ResultType
+```
+
+Or in your project file:
+
+```xml
+<PackageReference Include="TomRR.ResultType" Version="X.X.X" />
+```
+
+## Basic Usage
+
+### Result<TValue, TError>
+
+`TError` must implement `IErrorResult`.
 
 ```csharp
-Result<int, string> Divide(int a, int b)
+using TomRR.ResultType;
+
+Result<int, Error> Divide(int a, int b)
 {
     if (b == 0)
-        return "Division by zero";
+    {
+        return Error.Validation("Division by zero");
+    }
 
     return a / b;
 }
 
-var result = Divide(10, 0);
+var result = Divide(10, 2);
 
 var message = result.Match(
-    success => $"Result: {success}",
-    error => $"Error: {error}"
-);
+    onSuccess: value => $"Result: {value}",
+    onFailure: error => $"Error: {error.Description}");
 ```
 
-Your Result types support clean and expressive ways to return values from functions — using either implicit conversion or explicit factory methods.
+### Result<TError>
 
-### Result<TSuccess, TError, TStatusOnly>
-
-Supports status-only outcomes like NoContent, Accepted, Skipped, etc.
+Use this form when success does not need to return a value.
 
 ```csharp
-Result<string, Error, NoContent> TryFindItem(bool? found)
+using TomRR.ResultType;
+
+Result<Error> Save(bool canSave)
 {
-    if (found)
-    {    
+    if (!canSave)
+    {
+        return Result<Error>.Fail(Error.Validation("Cannot save"));
+    }
+
+    return Result<Error>.Ok();
+}
+
+var status = Save(false).Match(
+    onSuccess: () => "Saved",
+    onFailure: error => $"Error: {error.Description}");
+```
+
+### Result<TValue, TError, TStatusOnly>
+
+Use this form when you need a third branch for status-only outcomes.
+
+```csharp
+using TomRR.ResultType;
+using TomRR.ResultType.UnitTypes;
+
+Result<string, Error, NoContent> TryFindItem(bool exists)
+{
+    if (exists)
+    {
         return "Found item";
     }
-    else
-    {    
-        return Error.NotFound("Found not item");
-    }
-   
 
     return Result.NoContent;
 }
 
 var response = TryFindItem(false).Match(
-    success => $"Found: {success}",
-    error => $"Error: {error}",
-    status => "No item found."
-);
+    onSuccess: value => $"Found: {value}",
+    onFailure: error => $"Error: {error.Description}",
+    onStatusOnly: _ => "No item found.");
 ```
 
-## ➕ Implicit & Explicit Conversions
+## Implicit and Explicit Creation
 
-You can return results using implicit conversions for clean and expressive code:
-| Input Type    | Result Type                                 |
-| ------------- | ------------------------------------------- |
-| `TValue`      | `Result<TValue, TError>` or with StatusOnly |
-| `TError`      | `Result<TValue, TError>` or with StatusOnly |
-| `TStatusOnly` | `Result<TValue, TError, TStatusOnly>`       |
+You can create results either implicitly or via factory methods.
 
-### ✅ Implicit Example
+| Input | Produces |
+| --- | --- |
+| `TError` (single-arg) | `Result<TError>` failure |
+| `TValue` | `Result<TValue, TError>` or `Result<TValue, TError, TStatusOnly>` success |
+| `TError` | `Result<TValue, TError>` or `Result<TValue, TError, TStatusOnly>` failure |
+| `TStatusOnly` | `Result<TValue, TError, TStatusOnly>` status-only |
+
+Implicit example:
+
 ```csharp
-Result<int, string> Divide(int a, int b)
+Result<int, Error> Divide(int a, int b)
 {
     if (b == 0)
-        return "Invalid"; // implicitly creates an error
+    {
+        return Error.Validation("Invalid divisor");
+    }
 
-    return a / b; // implicitly creates a success
+    return a / b;
 }
 ```
 
+Explicit example:
+
 ```csharp
-Result<string, string, NoContent> TryGet(bool exists)
+Result<int, Error, NoContent> Compute(bool shouldSkip, bool hasFailed)
 {
-    if (!exists)
-        return Result.NoContent;
-
-    return "value";
-}
-
-```
-
-### 📎 Explicit Example
-
-Prefer explicit factory methods if clarity is desired:
-```csharp
-Result<int, Error, NoContent> Compute()
-{
-    if (ShouldSkip())
+    if (shouldSkip)
+    {
         return Result<int, Error, NoContent>.Status(Result.NoContent);
+    }
 
-    if (HasFailed())
+    if (hasFailed)
+    {
         return Result<int, Error, NoContent>.Failed(Error.Failure("Failure occurred"));
+    }
 
     return Result<int, Error, NoContent>.Success(42);
 }
-
 ```
 
-Available factory methods:
+## Functional Composition
 
-    Result<TValue, TError, TStatusOnly>.Success(value)
+Both result types support `Match`, `Map`, `Bind`, and `MapError`.
 
-    Result<TValue, TError, TStatusOnly>.Failed(error)
-
-    Result<TValue, TError, TStatusOnly>.Status(statusOnly)
-
-## 🧱 Generic Success and Error Results
-
-Use strongly typed `Success<TValue>` and `Error<TValue>` when you need to wrap or carry structured payloads.
 ```csharp
-using ResultType;
+using TomRR.ResultType;
+
+Result<int, Error> Parse(string input) =>
+    int.TryParse(input, out var value)
+        ? value
+        : Error.Validation("Not a number");
+
+Result<int, Error> EnsurePositive(int value) =>
+    value > 0
+        ? value
+        : Error.Validation("Must be > 0");
+
+var result = Parse("10")
+    .Map(v => v * 2)                            // Result<int, Error>
+    .Bind(EnsurePositive)                       // Result<int, Error>
+    .MapError(e => Error.Conflict(e.Description));
+```
+
+## Generic Success and Error Wrappers
+
+`Success<TValue>` and `Error<TValue>` are useful when you want typed payload wrappers.
+
+```csharp
+using TomRR.ResultType;
 
 var success = Result.SuccessOf("Created item successfully");
 var error = Result.ErrorOf("Invalid input");
@@ -153,162 +205,134 @@ Console.WriteLine(success.Value); // Created item successfully
 Console.WriteLine(error.Value);   // Invalid input
 ```
 
-### ✅ Success<TValue>
+You can also create them directly:
 
-Represents a successful operation with a payload.
 ```csharp
-var s1 = new Success<string>("Done");
-var s2 = Success<string>.Of("Completed");
-var s3 = Result.SuccessOf("Saved successfully");
+Success<int> s = 42;
+Error<string> e = "Failed";
 ```
 
-### ❌ Error<TValue>
+## Naming and Type Clarification
 
-Represents a failure with an associated error value.
+- `Success<TValue>` wraps a success payload value.
+- `Result.Success` is a status-only marker (`UnitTypes.Success`) with no payload.
+- `Error` is a structured error type (`Description`, `ErrorType`).
+- `Error<TValue>` wraps a typed error payload.
+- `Result<TError>` models success/failure with no success payload.
+- `Result<TValue, TError>` models success/failure with a success payload.
+
+## Built-in Status-Only Types
+
+All built-ins are zero-allocation `readonly struct` markers.
+
+| Type | Typical meaning |
+| --- | --- |
+| `NoContent` | Success with no payload (HTTP 204 style) |
+| `NotModified` | Resource unchanged (HTTP 304 style) |
+| `Success` | Generic success marker |
+| `Created` | Resource created (HTTP 201 style) |
+| `Accepted` | Accepted for async processing (HTTP 202 style) |
+| `Deleted` | Resource deleted |
+| `Updated` | Resource updated |
+| `Skipped` | Operation intentionally skipped |
+| `Timeout` | Operation timed out |
+| `Cancelled` | Operation cancelled |
+| `Retried` | Operation retried |
+| `None` | Neutral no-result outcome |
+| `Empty` | Successful empty outcome |
+
+Factory accessors are available via `Result`, for example:
+
 ```csharp
-var e1 = new Error<string>("File not found");
-var e2 = Error<string>.Of("Invalid request");
-var e3 = Result.ErrorOf("Timeout occurred");
+var status = Result.NoContent;
 ```
-Each supports implicit conversion for concise usage:
-```csharp
-Success<int> s = 42;       // implicit
-Error<string> e = "Failed"; // implicit
-```
-Both types implement semantic convenience properties:
-| Property                      | Description                                   |
-| ----------------------------- | --------------------------------------------- |
-| `HasValue`                    | Indicates if the underlying value is non-null |
-| `IsSuccessful` (Success only) | Indicates a valid success payload             |
 
-## 🧩 Extending with Custom Unit Results
+## Custom Status-Only Type
 
-You can define your own `IStatusOnlyResult` types to represent domain-specific outcomes.
+You can define your own status-only marker by implementing `IStatusOnlyResult`.
 
 ```csharp
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using TomRR.ResultType;
+
 [StructLayout(LayoutKind.Sequential, Size = 1)]
 [DebuggerDisplay(nameof(Deferred))]
-public readonly struct CustomResult : IStatusOnlyResult;
+public readonly struct Deferred : IStatusOnlyResult;
 
-public static partial class Result
+Result<string, Error, Deferred> TryProcess(bool defer)
 {
-    public static CustomResult CustomResult => new();
+    if (defer)
+    {
+        return new Deferred();
+    }
+
+    return "Processed";
 }
+```
 
-Use just like built-in NoContent, Created, etc.
+## ASP.NET Core Integration Example
 
-## 🧰 Built-in Unit Result Types
-| Result Type   | Description                                  | HTTP Status / Notes |
-| ------------- | -------------------------------------------- | ------------------- |
-| `NoContent`   | Operation successful, no content             | 204                 |
-| `Accepted`    | Request accepted for async processing        | 202                 |
-| `Created`     | New resource created                         | 201                 |
-| `Success`     | Generic success                              | 200                 |
-| `Deleted`     | Resource successfully deleted (custom)       | Custom              |
-| `Updated`     | Resource successfully updated (custom)       | Custom              |
-| `NotModified` | Resource not modified                        | 304                 |
-| `Skipped`     | Process skipped (custom)                     | Custom              |
-| `Timeout`     | Process timed out (custom)                   | Custom              |
-| `Cancelled`   | Process cancelled (custom)                   | Custom              |
-| `Retried`     | Process retried (custom)                     | Custom              |
-| `None`        | Neutral, no-result outcome                   | Custom              |
-| `Empty`       | Successful operation with no associated data | Custom              |
-
-All are *zero-alloc* `readonly struct`.
-
-
-
-## 🌐 ASP.NET Core Integration
-
-Add this extension to convert Result into IActionResult:
+`ToActionResult()` is not built into this package, but it is easy to add as an extension in your API project.
 
 ```csharp
 using Microsoft.AspNetCore.Mvc;
+using TomRR.ResultType;
+using TomRR.ResultType.UnitTypes;
 
-namespace ResultType.Extensions;
+namespace MyApi;
 
-public static class ResultExtensions
+public static class ResultHttpExtensions
 {
     public static IActionResult ToActionResult<TValue, TError>(
         this Result<TValue, TError> result)
+        where TError : IErrorResult
     {
         return result.Match<IActionResult>(
-            value => new OkObjectResult(value),
-            error => new BadRequestObjectResult(error)
-        );
+            onSuccess: value => new OkObjectResult(value),
+            onFailure: error => new BadRequestObjectResult(error));
     }
 
     public static IActionResult ToActionResult<TValue, TError, TStatusOnly>(
         this Result<TValue, TError, TStatusOnly> result)
+        where TError : IErrorResult
         where TStatusOnly : IStatusOnlyResult
     {
         return result.Match<IActionResult>(
-            value => new OkObjectResult(value),
-            error => new BadRequestObjectResult(error),
-            statusOnly => statusOnly switch
+            onSuccess: value => new OkObjectResult(value),
+            onFailure: error => new BadRequestObjectResult(error),
+            onStatusOnly: status => status switch
             {
                 NoContent => new NoContentResult(),
                 NotModified => new StatusCodeResult(304),
                 _ => new StatusCodeResult(204)
-            }
-        );
+            });
     }
 }
 ```
 
-## ✅ Controller Example
+## ResultType.Sample
 
-```csharp
-[HttpGet]
-public IActionResult GetData() =>
-    TryFindItem(true).ToActionResult();
-```
+This repository includes `ResultType.Sample`, a fail-fast verification console app.
 
-## 📦 Installation
+It is designed to:
 
-Install via NuGet:
-```
-dotnet add package TomRR.Core.ResultType
-```
-Or via your .csproj:
-```
-<PackageReference Include="TomRR.Core.ResultType" Version="X.X.X" />
+- exercise all main API combinations
+- fail immediately if behavior changes unexpectedly
+- provide a runnable walkthrough for users exploring the library
+
+Run it with:
+
+```bash
+dotnet run --project ResultType.Sample/ResultType.Sample.csproj -c Release
 ```
 
-## 📄 License
+For a detailed coverage map of what the sample verifies, see `ResultType.Sample/README.md`.
+
+## License
 
 Licensed under the Apache License 2.0.
 
-## 📝 Release Notes / Changelog
-### 0.0.6:
-- Added generic Success<TValue> and Error<TValue> with factory methods SuccessOf() and ErrorOf()
-- Introduced marker interfaces: ISuccessResult, IErrorResult
-- Added new unit results: Skipped, Timeout, Cancelled, Retried, None, Empty
-- Updated Documentation
+## Changelog
 
-### 0.0.5:
-- Added `MemberNotNullWhen` attributes to `HasValue` and `HasError` (improve compiler flow analysis).
-- Introduced the new `HasStatusOnly` property to explicitly indicate when a result represents a status-only state.
-- Added .Net 8 support
-
-### 0.0.4:
-- Updated Readme file - added section for implicit and explicit conversions
-
-### 0.0.3: 
-- Added AssemblyName to the .csproj
-
-### 0.0.2: Architectural Refinements and API Enhancements
-- Introduced a second specialized Result types: `Result<TValue, TError, TStatusOnly>` for success/failure/status-only scenarios.
-- Added support for status-only results with constraint on IStatusOnlyResult.
-- Added match methods for better pattern matching and error handling.
-- Consolidated status-only types (`NoContent`, `Created`, etc.) into a dedicated location for better organization.
-- General code cleanup and documentation improvements.
-
-### 0.0.1: Initial Testing Version: Rust-Like Result Type
-- Introduced a robust and type-safe "Rust-Like" Result type for explicit error handling in C#/.NET projects.
-- Result<TValue, TError>
-- Supports result states: Success, Failure.
-- Type safety and nullability analysis with comprehensive `MemberNotNullWhen` attributes.
-- Internal state management with private constructors, encouraging controlled instantiation.
-- Designed to promote more reliable and readable code by avoiding exceptions for control flow.
-- Supports implicit conversions for easy result creation.
+See `CHANGELOG.md` for release history.

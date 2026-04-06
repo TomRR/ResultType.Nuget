@@ -4,5 +4,5 @@ global using System.Diagnostics;
 global using System.Diagnostics.CodeAnalysis;
 global using System.Diagnostics.Contracts;
 global using System.Runtime.InteropServices;
-global using ResultType.UnitTypes;
-global using Timeout = ResultType.UnitTypes.Timeout;
+global using TomRR.ResultType.UnitTypes;
+global using Timeout = TomRR.ResultType.UnitTypes.Timeout;

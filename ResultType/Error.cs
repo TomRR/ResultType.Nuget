@@ -1,25 +1,25 @@
 using System.Diagnostics;
 
-namespace ResultType;
+namespace TomRR.ResultType;
 
 /// <summary>
 /// Represents a standardized error with a human-readable description and an associated classification type.
 /// This type is typically used to describe failures in a structured way (e.g., validation errors, conflicts, or unexpected conditions).
 /// </summary>
 [DebuggerDisplay("Error: {ErrorType} - {Description}")]
-public readonly partial struct Error : IErrorResult
+public readonly partial struct Error : IErrorResult, IEquatable<Error>
 {
     /// <summary>
     /// Gets the human-readable description of the error.
     /// This value provides additional context about what went wrong.
     /// </summary>
-    public string Description { get; init; }
+    public string Description { get; }
 
     /// <summary>
     /// Gets the category or classification of the error.
     /// This helps distinguish between different error domains, such as validation, conflict, or system failure.
     /// </summary>
-    public ErrorType ErrorType { get; init; }
+    public ErrorType ErrorType { get; }
 
     private Error(string description, ErrorType errorType = default)
     {
@@ -74,4 +74,26 @@ public readonly partial struct Error : IErrorResult
     /// <returns>An <see cref="Error"/> categorized as not found.</returns>
     public static Error NotFound(string description = "A 'Not Found' error has occurred.") =>
         new(description, ErrorType.NotFound);
+
+    /// <inheritdoc />
+    public bool Equals(Error other) =>
+        Description == other.Description && ErrorType == other.ErrorType;
+
+    /// <inheritdoc />
+    public override bool Equals(object? obj) =>
+        obj is Error other && Equals(other);
+
+    /// <inheritdoc />
+    public override int GetHashCode() =>
+        HashCode.Combine(Description, ErrorType);
+
+    /// <summary>
+    /// Determines whether two <see cref="Error"/> instances are equal.
+    /// </summary>
+    public static bool operator ==(Error left, Error right) => left.Equals(right);
+
+    /// <summary>
+    /// Determines whether two <see cref="Error"/> instances are not equal.
+    /// </summary>
+    public static bool operator !=(Error left, Error right) => !left.Equals(right);
 }
