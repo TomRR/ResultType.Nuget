@@ -1,4 +1,4 @@
-namespace ResultType;
+namespace TomRR.ResultType;
 
 /// <summary>
 /// Represents the result of an operation that may yield a value on success, an error on failure,
@@ -7,7 +7,7 @@ namespace ResultType;
 /// <typeparam name="TValue">The type of the value on success.</typeparam>
 /// <typeparam name="TError">The type of the error on failure.</typeparam>
 /// <typeparam name="TStatusOnly">The type representing a status-only result. Must implement <see cref="IStatusOnlyResult"/>.</typeparam>
-public sealed partial record Result<TValue, TError, TStatusOnly> 
+public sealed partial record Result<TValue, TError, TStatusOnly>
     where TError : IErrorResult
     where TStatusOnly : IStatusOnlyResult
 {
@@ -46,7 +46,7 @@ public sealed partial record Result<TValue, TError, TStatusOnly>
         StatusOnly = default;
         _state = ResultState.Failure;
     }
-    
+
     private Result(TStatusOnly statusOnly)
     {
         Value = default;
@@ -60,31 +60,31 @@ public sealed partial record Result<TValue, TError, TStatusOnly>
     /// </summary>
     [Pure]
     public static implicit operator Result<TValue, TError, TStatusOnly>(TValue value) => new(value);
-    
+
     /// <summary>
     /// Implicitly creates a failed result from an error.
     /// </summary>
     [Pure]
     public static implicit operator Result<TValue, TError, TStatusOnly>(TError error) => new(error);
-    
+
     /// <summary>
     /// Implicitly creates a status-only result.
     /// </summary>
     [Pure]
     public static implicit operator Result<TValue, TError, TStatusOnly>(TStatusOnly statusOnly) => new(statusOnly);
-    
+
     /// <summary>
     /// Creates a success result with the given value.
     /// </summary>
     [Pure]
     public static Result<TValue, TError, TStatusOnly> Success(TValue value) => value;
-    
+
     /// <summary>
     /// Creates a failed result with the given error.
     /// </summary>
     [Pure]
     public static Result<TValue, TError, TStatusOnly> Failed(TError error) => error;
-    
+
     /// <summary>
     /// Creates a status-only result with the given value.
     /// </summary>
@@ -135,7 +135,7 @@ public sealed partial record Result<TValue, TError, TStatusOnly>
     [MemberNotNullWhen(false, nameof(Error))]
     [MemberNotNullWhen(true, nameof(StatusOnly))]
     public bool IsStatusOnly => _state is ResultState.StatusOnly;
-    
+
     /// <summary>
     /// Indicates whether a non-null status-only is available.
     /// </summary>
@@ -163,6 +163,65 @@ public sealed partial record Result<TValue, TError, TStatusOnly>
             ResultState.Success => onSuccess(Value!),
             ResultState.Failure => onFailure(Error!),
             ResultState.StatusOnly => onStatusOnly(StatusOnly!),
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+
+    /// <summary>
+    /// Transforms the success value using the specified mapping function.
+    /// If the result is a failure or status-only, it is propagated unchanged.
+    /// </summary>
+    /// <typeparam name="TNew">The type of the new success value.</typeparam>
+    /// <param name="mapper">A function to apply to the success value.</param>
+    /// <returns>A new result with the mapped success value, or the original error/status.</returns>
+    [Pure]
+    public Result<TNew, TError, TStatusOnly> Map<TNew>(Func<TValue, TNew> mapper)
+    {
+        return _state switch
+        {
+            ResultState.Success => mapper(Value!),
+            ResultState.Failure => Error!,
+            ResultState.StatusOnly => StatusOnly!,
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+
+    /// <summary>
+    /// Chains a result-producing function onto the success value.
+    /// If the result is a failure or status-only, it is propagated unchanged.
+    /// </summary>
+    /// <typeparam name="TNew">The type of the new success value.</typeparam>
+    /// <param name="binder">A function that takes the success value and returns a new result.</param>
+    /// <returns>The result of the binder function, or the original error/status.</returns>
+    [Pure]
+    public Result<TNew, TError, TStatusOnly> Bind<TNew>(
+        Func<TValue, Result<TNew, TError, TStatusOnly>> binder)
+    {
+        return _state switch
+        {
+            ResultState.Success => binder(Value!),
+            ResultState.Failure => Error!,
+            ResultState.StatusOnly => StatusOnly!,
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+
+    /// <summary>
+    /// Transforms the error value using the specified mapping function.
+    /// If the result is a success or status-only, it is propagated unchanged.
+    /// </summary>
+    /// <typeparam name="TNewError">The type of the new error.</typeparam>
+    /// <param name="mapper">A function to apply to the error value.</param>
+    /// <returns>A new result with the mapped error, or the original success value/status.</returns>
+    [Pure]
+    public Result<TValue, TNewError, TStatusOnly> MapError<TNewError>(Func<TError, TNewError> mapper)
+        where TNewError : IErrorResult
+    {
+        return _state switch
+        {
+            ResultState.Success => Value!,
+            ResultState.Failure => mapper(Error!),
+            ResultState.StatusOnly => StatusOnly!,
             _ => throw new ArgumentOutOfRangeException()
         };
     }

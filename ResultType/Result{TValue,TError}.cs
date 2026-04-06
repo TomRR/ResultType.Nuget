@@ -1,4 +1,4 @@
-namespace ResultType;
+namespace TomRR.ResultType;
 
 /// <summary>
 /// Represents the result of an operation that can either succeed with a value of type <typeparamref name="TValue"/>
@@ -35,7 +35,7 @@ public sealed partial record Result<TValue, TError> where TError : IErrorResult
         Error = error;
         _state = ResultState.Failure;
     }
-    
+
     /// <summary>
     /// Implicitly creates a successful result from a value.
     /// </summary>
@@ -47,13 +47,13 @@ public sealed partial record Result<TValue, TError> where TError : IErrorResult
     /// </summary>
     [Pure]
     public static implicit operator Result<TValue, TError>(TError error) => new(error);
-    
+
     /// <summary>
     /// Creates a success result with the given value.
     /// </summary>
     [Pure]
-    public static Result<TValue, TError> Success(TValue value)=> value;
-    
+    public static Result<TValue, TError> Success(TValue value) => value;
+
     /// <summary>
     /// Creates a failed result with the given error.
     /// </summary>
@@ -67,7 +67,7 @@ public sealed partial record Result<TValue, TError> where TError : IErrorResult
     [MemberNotNullWhen(true, nameof(Value))]
     [MemberNotNullWhen(false, nameof(Error))]
     public bool IsSuccessful => _state is ResultState.Success;
-    
+
     /// <summary>
     /// Indicates whether a non-null success value is available.
     /// </summary>
@@ -83,7 +83,7 @@ public sealed partial record Result<TValue, TError> where TError : IErrorResult
     [MemberNotNullWhen(false, nameof(Value))]
     [MemberNotNullWhen(true, nameof(Error))]
     public bool HasFailed => _state is ResultState.Failure;
-    
+
     /// <summary>
     /// Indicates whether a non-null error is available.
     /// </summary>
@@ -91,7 +91,6 @@ public sealed partial record Result<TValue, TError> where TError : IErrorResult
     [MemberNotNullWhen(false, nameof(Value))]
     [MemberNotNullWhen(true, nameof(Error))]
     public bool HasError => HasFailed && Error is not null;
-    
 
     /// <summary>
     /// Pattern matches on the result, invoking the appropriate delegate.
@@ -108,6 +107,61 @@ public sealed partial record Result<TValue, TError> where TError : IErrorResult
         {
             ResultState.Success => onSuccess(Value!),
             ResultState.Failure => onFailure(Error!),
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+
+    /// <summary>
+    /// Transforms the success value using the specified mapping function.
+    /// If the result is a failure, the error is propagated unchanged.
+    /// </summary>
+    /// <typeparam name="TNew">The type of the new success value.</typeparam>
+    /// <param name="mapper">A function to apply to the success value.</param>
+    /// <returns>A new result with the mapped success value, or the original error.</returns>
+    [Pure]
+    public Result<TNew, TError> Map<TNew>(Func<TValue, TNew> mapper)
+    {
+        return _state switch
+        {
+            ResultState.Success => mapper(Value!),
+            ResultState.Failure => Error!,
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+
+    /// <summary>
+    /// Chains a result-producing function onto the success value.
+    /// If the result is a failure, the error is propagated unchanged.
+    /// </summary>
+    /// <typeparam name="TNew">The type of the new success value.</typeparam>
+    /// <param name="binder">A function that takes the success value and returns a new result.</param>
+    /// <returns>The result of the binder function, or the original error.</returns>
+    [Pure]
+    public Result<TNew, TError> Bind<TNew>(Func<TValue, Result<TNew, TError>> binder)
+    {
+        return _state switch
+        {
+            ResultState.Success => binder(Value!),
+            ResultState.Failure => Error!,
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+
+    /// <summary>
+    /// Transforms the error value using the specified mapping function.
+    /// If the result is a success, the value is propagated unchanged.
+    /// </summary>
+    /// <typeparam name="TNewError">The type of the new error.</typeparam>
+    /// <param name="mapper">A function to apply to the error value.</param>
+    /// <returns>A new result with the mapped error, or the original success value.</returns>
+    [Pure]
+    public Result<TValue, TNewError> MapError<TNewError>(Func<TError, TNewError> mapper)
+        where TNewError : IErrorResult
+    {
+        return _state switch
+        {
+            ResultState.Success => Value!,
+            ResultState.Failure => mapper(Error!),
             _ => throw new ArgumentOutOfRangeException()
         };
     }
