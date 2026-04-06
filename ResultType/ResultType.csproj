@@ -38,11 +38,4 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
-    <ItemGroup>
-      <Content Include="..\.editorconfig">
-        <Link>.editorconfig</Link>
-      </Content>
-      <Content Include=".github\actions\setup_dotnet\action.yml" />
-      <Content Include=".github\workflows\ci.yml" />
-    </ItemGroup>
 </Project>

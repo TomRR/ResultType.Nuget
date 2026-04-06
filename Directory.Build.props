@@ -6,5 +6,7 @@
         <Company>TomRR</Company>
         <Copyright>Copyright (c) $([System.DateTime]::Now.Year) Tom-Robert Resing</Copyright>
         <RepositoryType>git</RepositoryType>
+
+        <DefaultItemExcludes>$(DefaultItemExcludes);.github\**;nupkg\**</DefaultItemExcludes>
     </PropertyGroup>
 </Project>

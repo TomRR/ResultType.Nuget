@@ -32,6 +32,9 @@ jobs:
       - name: Sample verification
         run: dotnet run --project ResultType.Sample/ResultType.Sample.csproj --no-build -c Release
 
+      - name: Pack validation
+        run: dotnet pack ResultType/ResultType.csproj --no-build -c Release -o ./nupkg
+
   # -------------------------
   # Deploy to NuGet
   # -------------------------
@@ -53,6 +56,7 @@ jobs:
         run: >-
           dotnet pack
           ResultType/ResultType.csproj
+          --no-restore
           -c Release
           -o ./nupkg
           /p:Version=${{ env.VERSION }}
@@ -60,5 +64,6 @@ jobs:
       - name: Push to NuGet
         run: >-
           dotnet nuget push ./nupkg/*.nupkg
+          --skip-duplicate
           --api-key ${{ secrets.NUGET_API_KEY }}
           --source https://api.nuget.org/v3/index.json
