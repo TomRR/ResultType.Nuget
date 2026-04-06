@@ -1,4 +1,4 @@
-namespace ResultType;
+namespace TomRR.ResultType;
 
 /// <summary>
 /// Marker interface for types that represent status-only (no payload) results (e.g., NoContent, NotModified).

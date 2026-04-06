@@ -1,0 +1,12 @@
+<Project>
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <Authors>Tom-Robert Resing</Authors>
+        <Company>TomRR</Company>
+        <Copyright>Copyright (c) $([System.DateTime]::Now.Year) Tom-Robert Resing</Copyright>
+        <RepositoryType>git</RepositoryType>
+
+        <DefaultItemExcludes>$(DefaultItemExcludes);.github\**;nupkg\**</DefaultItemExcludes>
+    </PropertyGroup>
+</Project>

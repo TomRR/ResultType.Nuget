@@ -1,4 +1,4 @@
-namespace ResultType;
+namespace TomRR.ResultType;
 
 /// <summary>
 /// Specifies the classification categories of errors represented by an <see cref="Error"/> instance.
@@ -6,6 +6,12 @@ namespace ResultType;
 /// </summary>
 public enum ErrorType
 {
+    /// <summary>
+    /// Represents an unset or uninitialized error type.
+    /// This is the default value for <see cref="ErrorType"/>.
+    /// </summary>
+    None = 0,
+
     /// <summary>
     /// A general-purpose failure that does not fit any specific category.
     /// Typically used as a default when no more precise classification applies.

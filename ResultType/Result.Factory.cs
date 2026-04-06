@@ -1,4 +1,4 @@
-namespace ResultType;
+namespace TomRR.ResultType;
 
 /// <summary>
 /// Provides factory methods for creating common result and status-only types.

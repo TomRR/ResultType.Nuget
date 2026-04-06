@@ -1,15 +1,17 @@
-namespace ResultType;
+namespace TomRR.ResultType;
 
 /// <summary>
 /// Represents a strongly typed success result that encapsulates a value produced by a successful operation.
 /// Useful for returning context or payloads associated with a successful outcome, such as created entities,
 /// computation results, or confirmation messages.
+/// This type wraps success payloads and is distinct from the status-only <see cref="UnitTypes.Success"/> marker
+/// exposed via <see cref="Result.Success"/>.
 /// </summary>
 /// <typeparam name="TValue">
 /// The type of the value associated with the success result.
 /// </typeparam>
 [DebuggerDisplay("Success: {Value}")]
-public sealed partial record Success<TValue>
+public sealed partial record Success<TValue> : ISuccessResult
 {
     /// <summary>
     /// Gets the underlying value associated with this success result.
@@ -39,7 +41,8 @@ public sealed partial record Success<TValue>
     public static Success<TValue> Of(TValue value) => new(value);
 
     /// <summary>
-    /// Indicates whether this instance represents a successful result (i.e., the underlying value is not <c>null</c>).
+    /// Indicates whether this instance contains a non-null success payload.
+    /// A <c>null</c> payload is considered "no successful value" for this wrapper.
     /// </summary>
     [Pure]
     [MemberNotNullWhen(true, nameof(Value))]

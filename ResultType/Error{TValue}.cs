@@ -1,4 +1,4 @@
-namespace ResultType;
+namespace TomRR.ResultType;
 
 /// <summary>
 /// Represents a strongly typed error result that encapsulates an error-related value or message.

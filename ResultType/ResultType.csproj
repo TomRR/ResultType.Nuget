@@ -1,43 +1,48 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+      <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
         <IsPackable>true</IsPackable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <LangVersion>12</LangVersion>
-        
-        <RootNamespace>ResultType</RootNamespace>
-        <AssemblyName>ResultType</AssemblyName>
 
-        <Version>0.0.6</Version>    
-        <PackageReleaseNotes>
-            See release notes at https://github.com/TomRR/ResultType.Nuget?tab=readme-ov-file#-release-notes--changelog
-        </PackageReleaseNotes>
-
-        <Authors>Tom-Robert Resing</Authors>
+        <RootNamespace>TomRR.ResultType</RootNamespace>
+        <AssemblyName>TomRR.ResultType</AssemblyName>
         <ProductName>ResultType</ProductName>
-        <Company>TomRR</Company>
+        <Version>0.1.0</Version>
         <Description>
             A lightweight, robust, and type-safe "Rust-Like" Result type for C#/.NET projects, promoting explicit error handling and reliable code. Designed to elegantly manage operation outcomes without relying on exceptions for control flow.
         </Description>
-        <PackageId>TomRR.Core.ResultType</PackageId>
-        <PackageTags>ResultType;ErrorHandling;Functional;Result;FunctionalProgramming;CSharp;DotNet</PackageTags>
-
-        <Copyright>Copyright © 2024-$([System.DateTime]::Now.Year) Tom-Robert Resing</Copyright>
-
-        <RepositoryType>git</RepositoryType>
+        <PackageId>TomRR.ResultType</PackageId>
+        <PackageTags>
+          ResultType;ErrorHandling;Result;FunctionalProgramming;CSharp;DotNet
+        </PackageTags>
+        
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <PackageProjectUrl>https://github.com/TomRR/ResultType.Nuget</PackageProjectUrl>
         <RepositoryUrl>https://github.com/TomRR/ResultType.Nuget.git</RepositoryUrl>
 
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <PackageReleaseNotes>CHANGELOG.md</PackageReleaseNotes>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
     <ItemGroup>
         <None Include="$(MSBuildThisFileDirectory)..\README.md" Pack="true" PackagePath="" />
+        <None Include="$(MSBuildThisFileDirectory)..\CHANGELOG.md" Pack="true" PackagePath="" />
         <None Include="$(MSBuildThisFileDirectory)..\LICENSE" Pack="true" PackagePath="" />
     </ItemGroup>
-
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="..\.editorconfig">
+        <Link>.editorconfig</Link>
+      </Content>
+      <Content Include=".github\actions\setup_dotnet\action.yml" />
+      <Content Include=".github\workflows\ci.yml" />
+    </ItemGroup>
 </Project>

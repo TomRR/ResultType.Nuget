@@ -1,4 +1,4 @@
-namespace ResultType.UnitTypes;
+namespace TomRR.ResultType.UnitTypes;
 
 /// <summary>
 /// Represents a status-only result indicating that no content is returned.
