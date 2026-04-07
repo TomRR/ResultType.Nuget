@@ -335,4 +335,4 @@ Licensed under the Apache License 2.0.
 
 ## Changelog
 
-See `CHANGELOG.md` for release history.
+See `[CHANGELOG.md](https://github.com/TomRR/ResultType.Nuget/blob/main/CHANGELOG.md)` for release history.
